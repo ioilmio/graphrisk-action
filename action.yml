@@ -1,0 +1,21 @@
+
+name: 'GraphRisk Security Scan'
+description: 'Identify and mitigate vulnerabilities in your dependencies.'
+author: 'GraphRisk'
+inputs:
+  api-key:
+    description: 'GraphRisk API Key'
+    required: true
+  project-id:
+    description: 'Optional Project ID (If omitted, repo URL via GITHUB_CONTEXT is used)'
+    required: false
+  ecosystem:
+    description: 'Ecosystem to scan (npm, pypi, go, rubygems)'
+    required: false
+    default: 'npm'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+branding:
+  icon: 'shield'
+  color: 'purple'
