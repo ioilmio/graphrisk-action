@@ -16,16 +16,36 @@
 
 ## 📦 Usage
 
-Add the following step to your `.github/workflows/main.yml`:
+Create a new workflow file in `.github/workflows/graphrisk.yml` (or add to an existing workflow):
 
 ```yaml
-steps:
-  - uses: actions/checkout@v4
-  
-  - name: GraphRisk Scan
-    uses: ioilmio/graphrisk-action@v1.0.0
-    with:
-      api-key: ${{ secrets.GRAPHRISK_API_KEY }}
+name: GraphRisk Security Scan
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: GraphRisk Scan
+        uses: ioilmio/graphrisk-action@v1.0.0
+        with:
+          api-key: ${{ secrets.GRAPHRISK_API_KEY }}
+```
+
+For non-npm projects, specify the ecosystem:
+
+```yaml
+      - name: GraphRisk Scan
+        uses: ioilmio/graphrisk-action@v1.0.0
+        with:
+          api-key: ${{ secrets.GRAPHRISK_API_KEY }}
+          ecosystem: 'pip'  # or 'poetry', 'go', 'rubygems', etc.
 ```
 
 ## ⚙️ Configuration
