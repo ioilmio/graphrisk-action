@@ -14,8 +14,7 @@ inputs:
     required: false
     default: 'npm'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
-  icon: 'shield'
-  color: 'purple'
+  icon: 'logo.png'
