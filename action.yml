@@ -10,7 +10,7 @@ inputs:
     description: 'Optional Project ID (If omitted, repo URL via GITHUB_CONTEXT is used)'
     required: false
   ecosystem:
-    description: 'Ecosystem to scan (npm, pypi, go, rubygems)'
+    description: 'Ecosystem to scan. Supported: npm, pip, pypi, poetry, pipenv, go, rubygems, bundler'
     required: false
     default: 'npm'
 runs:

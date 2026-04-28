@@ -59,10 +59,24 @@ async function run() {
     console.log(`Starting scan for ${repositoryUrl} (${ecosystem})...`);
 
     // 2. Read Manifest
-    // TODO: Support various manifest files based on ecosystem
-    const manifestFile = 'package.json'; // Fixed for now
+    const ecosystemManifests = {
+      'npm': 'package.json',
+      'pip': 'requirements.txt',
+      'pypi': 'requirements.txt',
+      'poetry': 'pyproject.toml',
+      'pipenv': 'Pipfile',
+      'go': 'go.mod',
+      'rubygems': 'Gemfile',
+      'bundler': 'Gemfile'
+    };
+
+    const manifestFile = ecosystemManifests[ecosystem.toLowerCase()];
+    if (!manifestFile) {
+      core.setFailed(`Unsupported ecosystem '${ecosystem}'. Supported: npm, pip, pypi, poetry, pipenv, go, rubygems, bundler`);
+      return;
+    }
     if (!fs.existsSync(manifestFile)) {
-      core.setFailed(`Manifest file ${manifestFile} not found.`);
+      core.setFailed(`Manifest file ${manifestFile} not found for ecosystem '${ecosystem}'.`);
       return;
     }
     const manifestContent = fs.readFileSync(manifestFile, 'utf8');
