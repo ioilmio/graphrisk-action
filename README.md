@@ -42,7 +42,7 @@ For non-npm projects, specify the ecosystem:
 
 ```yaml
       - name: GraphRisk Scan
-        uses: ioilmio/graphrisk-action@v1.0.0
+        uses: ioilmio/graphrisk-action@v1.0.1
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
           ecosystem: 'pip'  # or 'poetry', 'go', 'rubygems', etc.
