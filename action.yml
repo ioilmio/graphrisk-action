@@ -17,4 +17,5 @@ runs:
   using: 'node24'
   main: 'dist/index.js'
 branding:
-  icon: 'logo.png'
+  icon: 'shield'
+  color: 'purple'
