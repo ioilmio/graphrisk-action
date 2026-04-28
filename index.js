@@ -83,25 +83,32 @@ async function run() {
 
     // 3. Initiate Scan
     console.log('Initiating async scan...');
-    const initResponse = await request('POST', `${apiUrl}/scan/async`, {
+    const projectId = core.getInput('project-id');
+    const scanPayload = {
       repositoryUrl,
       manifestContent,
       ecosystem
-    }, {
+    };
+    if (projectId) {
+      scanPayload.projectId = projectId;
+    }
+    const initResponse = await request('POST', `${apiUrl}/scan/async`, scanPayload, {
       'x-api-key': apiKey
     });
 
     const scanId = initResponse.scanId;
-    const projectId = initResponse.project?.id;
-    console.log(`Scan initiated. ID: ${scanId}. Project ID: ${projectId}`);
+    const responseProjectId = initResponse.project?.id;
+    console.log(`Scan initiated. ID: ${scanId}. Project ID: ${responseProjectId}`);
     console.log('Use this Scan ID to check status via API.');
 
     // 4. Poll for Completion
     let status = 'PENDING';
     let attempts = 0;
     const maxAttempts = 60; // 10 minutes (10s interval)
+    let errorCount = 0;
+    const maxErrors = 5;
 
-    while (status === 'PENDING' && attempts < maxAttempts) {
+    while (status === 'PENDING' && attempts < maxAttempts && errorCount < maxErrors) {
       await sleep(10000);
       attempts++;
 
@@ -112,10 +119,16 @@ async function run() {
         status = statusRes.status;
         process.stdout.write('.');
       } catch (e) {
-        console.error('Polling error:', e.message);
+        errorCount++;
+        console.error(`Polling error (${errorCount}/${maxErrors}):`, e.message);
       }
     }
     console.log('\n');
+
+    if (errorCount >= maxErrors) {
+      core.setFailed(`Too many polling errors (${errorCount}). Last status: ${status}`);
+      return;
+    }
 
     if (status !== 'COMPLETED') {
       core.setFailed(`Scan timed out or failed. Status: ${status}`);
@@ -134,12 +147,24 @@ async function run() {
     console.log('SARIF report saved to graphrisk.sarif');
 
     // 6. Summary Logic (Fail on Severity?)
-    const criticalCount = sarif.runs[0].results.filter(r => r.level === 'error').length;
+    const results = sarif?.runs?.[0]?.results || [];
+    const criticalCount = results.filter(r => r.level === 'error').length;
+    const warningCount = results.filter(r => r.level === 'warning').length;
+    const noteCount = results.filter(r => r.level === 'note').length;
+    
+    console.log(`\n=== Scan Summary ===`);
+    console.log(`Total issues: ${results.length}`);
+    console.log(`  Critical (error): ${criticalCount}`);
+    console.log(`  Warnings: ${warningCount}`);
+    console.log(`  Notes: ${noteCount}`);
+    
     if (criticalCount > 0) {
       core.warning(`Found ${criticalCount} critical vulnerabilities.`);
       // core.setFailed('Critical vulnerabilities found.'); // Optional: Fail build
+    } else if (results.length === 0) {
+      console.log('✅ No vulnerabilities found.');
     } else {
-      console.log('No critical vulnerabilities found.');
+      console.log(`Found ${results.length} non-critical issues.`);
     }
 
   } catch (error) {
