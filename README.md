@@ -63,5 +63,9 @@ To prevent abuse, GraphRisk locks a project slot to its initial content baseline
 You have reached your plan's project limit.
 *   **Fix**: Upgrade to Pro or purchase "One-Shot Audit" credits in the dashboard.
 
+## 🤝 Contributing
+
+Issues and pull requests are welcome! If you find a bug or have a feature request, please open an issue on GitHub. For pull requests, please ensure your code follows the existing style and includes appropriate tests.
+
 ## 📄 License
 MIT
