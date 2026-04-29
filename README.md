@@ -23,15 +23,25 @@ name: GraphRisk Security Scan
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'pnpm-lock.yaml'
+      - 'yarn.lock'
   pull_request:
     branches: [ main, master ]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'pnpm-lock.yaml'
+      - 'yarn.lock'
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: GraphRisk Scan
         uses: ioilmio/graphrisk-action@v1.0.1
         with:
@@ -44,7 +54,84 @@ jobs:
           path: graphrisk.sarif
 ```
 
-For non-npm projects, specify the ecosystem:
+For non-npm projects, specify the ecosystem and adjust the paths:
+
+**Python (pip):**
+```yaml
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'requirements.txt'
+      - 'requirements*.txt'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'requirements.txt'
+      - 'requirements*.txt'
+```
+
+**Python (Poetry):**
+```yaml
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'pyproject.toml'
+      - 'poetry.lock'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'pyproject.toml'
+      - 'poetry.lock'
+```
+
+**Python (Pipenv):**
+```yaml
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'Pipfile'
+      - 'Pipfile.lock'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'Pipfile'
+      - 'Pipfile.lock'
+```
+
+**Go:**
+```yaml
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+```
+
+**Ruby:**
+```yaml
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'Gemfile'
+      - 'Gemfile.lock'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'Gemfile'
+      - 'Gemfile.lock'
+```
+
+Then specify the ecosystem in the scan step:
 
 ```yaml
       - name: GraphRisk Scan
