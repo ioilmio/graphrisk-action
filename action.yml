@@ -13,6 +13,10 @@ inputs:
     description: 'Ecosystem to scan. Supported: npm, pip, pypi, poetry, pipenv, go, rubygems, bundler'
     required: false
     default: 'npm'
+  timeout:
+    description: 'Maximum time to wait for scan completion in seconds (default: 600 = 10 minutes)'
+    required: false
+    default: '600'
 runs:
   using: 'node24'
   main: 'dist/index.js'

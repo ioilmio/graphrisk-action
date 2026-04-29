@@ -31886,6 +31886,7 @@ async function run() {
   try {
     const apiKey = core.getInput('api-key');
     const ecosystem = core.getInput('ecosystem');
+    const timeoutSeconds = parseInt(core.getInput('timeout') || '600', 10);
     const apiUrl = process.env.GRAPHRISK_API_URL || 'https://graphrisk.io/api'; // Make configurable
 
     // 1. Context & Identity
@@ -31940,14 +31941,15 @@ async function run() {
     // 4. Poll for Completion
     let status = 'PENDING';
     let attempts = 0;
-    const maxAttempts = 60; // 10 minutes (10s interval)
+    const pollInterval = 10; // seconds
+    const maxAttempts = Math.ceil(timeoutSeconds / pollInterval);
     let errorCount = 0;
     const maxErrors = 5;
 
-    console.log(`Polling for scan completion (max ${maxAttempts * 10}s timeout)...`);
+    console.log(`Polling for scan completion (max ${timeoutSeconds}s timeout, ${maxAttempts} attempts)...`);
 
     while (status === 'PENDING' && attempts < maxAttempts && errorCount < maxErrors) {
-      await sleep(10000);
+      await sleep(pollInterval * 1000);
       attempts++;
 
       try {
@@ -31961,7 +31963,7 @@ async function run() {
         const currentStep = statusRes.currentStep;
         const progress = statusRes.progress || 0;
         const totalDeps = statusRes.totalDependencies || 0;
-        const elapsed = attempts * 10;
+        const elapsed = attempts * pollInterval;
 
         // Build status message
         let statusMsg = `[${elapsed}s elapsed]`;

@@ -181,6 +181,7 @@ The scan generates a `graphrisk.sarif` file in the working directory. To persist
 |-------|-------------|----------|---------|
 | `api-key` | Your GraphRisk API Key (Get one from [GraphRisk Dashboard](https://graphrisk.io/dashboard)) | **Yes** | N/A |
 | `ecosystem` | The package ecosystem to scan. Supported: `npm`, `pip`, `pypi`, `poetry`, `pipenv`, `go`, `rubygems`, `bundler` | No | `npm` |
+| `timeout` | Maximum time to wait for scan completion in seconds | No | `600` (10 minutes) |
 | `project-id` | Explicit Project ID override. Not recommended unless you need to alias projects manually. | No | Auto-detected |
 
 ## 🛠️ Setup Instructions
