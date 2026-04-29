@@ -13,6 +13,7 @@
 *   **GitHub Security Integration**: Vulnerabilities appear directly in your pull requests and Security tab (SARIF support).
 *   **Smart Identity Locking**: Automatically tracks projects by Repository URL to prevent quota abuse.
 *   **Zero-Config**: Works out of the box for standard `npm` projects.
+*   **Real-Time Progress Tracking**: Watch scan progress with live updates on current step, percentage completion, and vulnerabilities found.
 
 ## 📦 Usage
 
@@ -212,6 +213,30 @@ You have reached your plan's project limit.
 ## 🤝 Contributing
 
 Issues and pull requests are welcome! If you find a bug or have a feature request, please open an issue on GitHub. For pull requests, please ensure your code follows the existing style and includes appropriate tests.
+
+## 📋 Scan Output
+
+During the scan, you'll see real-time progress updates in your GitHub Actions logs:
+
+```
+Starting scan for https://github.com/owner/repo (npm)...
+Initiating async scan...
+Scan initiated. ID: abc-123. Project ID: proj-456
+Use this Scan ID to check status via API.
+Polling for scan completion (max 600s timeout)...
+[30s elapsed] Step: building dependency graph (0%) - 45 dependencies - 570s remaining
+[60s elapsed] Step: scanning vulnerabilities (50%) - 45 dependencies - 2 vulnerabilities found - 540s remaining
+[90s elapsed] Step: completed (100%) - 45 dependencies - 5 vulnerabilities found - 510s remaining
+Scan completed successfully.
+Downloading SARIF report...
+SARIF report saved to graphrisk.sarif
+```
+
+**Progress Steps:**
+- `parsing_manifest` - Reading and parsing your dependency manifest
+- `building_dependency_graph` - Resolving transitive dependencies
+- `scanning_vulnerabilities` - Checking dependencies against vulnerability database
+- `completed` - Scan finished, results available
 
 ## 📄 License
 MIT

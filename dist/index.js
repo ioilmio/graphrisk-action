@@ -31944,6 +31944,8 @@ async function run() {
     let errorCount = 0;
     const maxErrors = 5;
 
+    console.log(`Polling for scan completion (max ${maxAttempts * 10}s timeout)...`);
+
     while (status === 'PENDING' && attempts < maxAttempts && errorCount < maxErrors) {
       await sleep(10000);
       attempts++;
@@ -31953,13 +31955,42 @@ async function run() {
           'x-api-key': apiKey
         });
         status = statusRes.status;
-        process.stdout.write('.');
+
+        // Log progress with detailed information
+        const vulnCount = statusRes.vulnerabilityCount || 0;
+        const currentStep = statusRes.currentStep;
+        const progress = statusRes.progress || 0;
+        const totalDeps = statusRes.totalDependencies || 0;
+        const elapsed = attempts * 10;
+
+        // Build status message
+        let statusMsg = `[${elapsed}s elapsed]`;
+        if (currentStep && currentStep !== 'unknown') {
+          statusMsg += ` Step: ${currentStep.replace(/_/g, ' ')}`;
+        }
+        if (progress > 0) {
+          statusMsg += ` (${progress}%)`;
+        }
+        if (totalDeps > 0) {
+          statusMsg += ` - ${totalDeps} dependencies`;
+        }
+        if (vulnCount > 0) {
+          statusMsg += ` - ${vulnCount} vulnerabilities found`;
+        }
+
+        // Log every 3 attempts (30 seconds) or when we have interesting data
+        if (attempts % 3 === 0 || vulnCount > 0 || (currentStep && currentStep !== 'parsing_manifest')) {
+          const remaining = (maxAttempts - attempts) * 10;
+          console.log(`${statusMsg} - ${remaining}s remaining`);
+        } else {
+          process.stdout.write('.');
+        }
       } catch (e) {
         errorCount++;
         console.error(`Polling error (${errorCount}/${maxErrors}):`, e.message);
       }
     }
-    console.log('\n');
+    console.log('');
 
     if (errorCount >= maxErrors) {
       core.setFailed(`Too many polling errors (${errorCount}). Last status: ${status}`);
