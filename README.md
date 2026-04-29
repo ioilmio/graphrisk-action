@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: GraphRisk Scan
-        uses: ioilmio/graphrisk-action@v1.0.2
+        uses: ioilmio/graphrisk-action@v1.0.3
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
 
@@ -136,7 +136,7 @@ Then specify the ecosystem in the scan step:
 
 ```yaml
       - name: GraphRisk Scan
-        uses: ioilmio/graphrisk-action@v1.0.2
+        uses: ioilmio/graphrisk-action@v1.0.3
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
           ecosystem: 'pip'  # or 'poetry', 'go', 'rubygems', etc.
@@ -150,7 +150,7 @@ The scan generates a `graphrisk.sarif` file in the working directory. To persist
 
 ```yaml
       - name: GraphRisk Scan
-        uses: ioilmio/graphrisk-action@v1.0.2
+        uses: ioilmio/graphrisk-action@v1.0.3
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
 
@@ -165,7 +165,7 @@ The scan generates a `graphrisk.sarif` file in the working directory. To persist
 
 ```yaml
       - name: GraphRisk Scan
-        uses: ioilmio/graphrisk-action@v1.0.2
+        uses: ioilmio/graphrisk-action@v1.0.3
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
 
