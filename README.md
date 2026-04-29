@@ -30,12 +30,18 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: GraphRisk Scan
-        uses: ioilmio/graphrisk-action@v1.0.0
+        uses: ioilmio/graphrisk-action@v1.0.1
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
+
+      - name: Upload SARIF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphrisk-sarif
+          path: graphrisk.sarif
 ```
 
 For non-npm projects, specify the ecosystem:
@@ -46,6 +52,39 @@ For non-npm projects, specify the ecosystem:
         with:
           api-key: ${{ secrets.GRAPHRISK_API_KEY }}
           ecosystem: 'pip'  # or 'poetry', 'go', 'rubygems', etc.
+```
+
+## 📊 Accessing SARIF Results
+
+The scan generates a `graphrisk.sarif` file in the working directory. To persist or view this file, add one of these steps after the scan:
+
+**Option 1: Upload as Artifact**
+
+```yaml
+      - name: GraphRisk Scan
+        uses: ioilmio/graphrisk-action@v1.0.1
+        with:
+          api-key: ${{ secrets.GRAPHRISK_API_KEY }}
+
+      - name: Upload SARIF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphrisk-sarif
+          path: graphrisk.sarif
+```
+
+**Option 2: Upload to GitHub Security Tab**
+
+```yaml
+      - name: GraphRisk Scan
+        uses: ioilmio/graphrisk-action@v1.0.1
+        with:
+          api-key: ${{ secrets.GRAPHRISK_API_KEY }}
+
+      - name: Upload to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: graphrisk.sarif
 ```
 
 ## ⚙️ Configuration
